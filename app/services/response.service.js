@@ -63,6 +63,15 @@ const createTokenLogin = (req, res, msg, data=[], token) => {
    res.status(200).json(resData)
 }
 
+const errorExistResponse = (req, res, msg) => {
+   const resData = {
+       status: 0,
+       message: msg
+   }
+   res.status(400).json(resData)
+}
+
+
 
 module.exports = {
    successResponse,
@@ -71,5 +80,6 @@ module.exports = {
    notFoundResponse,
    unauthorizedResponse,
    createTokenLogin,
-   errorResponse
+   errorResponse,
+   errorExistResponse
 }
