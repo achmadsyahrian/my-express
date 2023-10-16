@@ -1,5 +1,7 @@
 const {Note} = require('../models/')
-const { successResponse, serverErrorResponse, successCreateResponse, errorExistResponse, notFoundResponse } = require('../services/response.service')
+const { successResponse, serverErrorResponse, successCreateResponse, errorExistResponse, notFoundResponse, errorResponse } = require('../services/response.service')
+const NoteValidation = require('../validations/note.validation')
+
 
 const getAll = async (req, res) => {
    const result = await Note.findAll()
@@ -8,6 +10,9 @@ const getAll = async (req, res) => {
 
 const create = async (req, res) => {
    const {title, content} = req.body
+   // Validation
+   const {error} = await NoteValidation.note(req.body)
+   if (error) {return errorResponse(req, res, error.details[0].message)}
    // Cek Title Exist
    const titleExist = await Note.findOne({where: {title}})
    if (titleExist) {return errorExistResponse(req, res, "Title already exists in the database.")}
