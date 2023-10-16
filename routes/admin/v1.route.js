@@ -9,4 +9,10 @@ router
    .get(auth, NoteController.getAll)
    .post(auth, NoteController.create)
 
+router 
+   .route('/notes/:id')
+   .get(auth, NoteController.getDetail)
+   .delete(auth, NoteController.destroy)
+
 module.exports = router
+
