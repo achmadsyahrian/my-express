@@ -58,9 +58,30 @@ const destroy = async (req, res) => {
 }
 
 
+const update = async (req, res) => {
+   const {id} = req.params
+   const {title, content} = req.body
+   // Validation
+   const {error} = await NoteValidation.note(req.body)
+   if (error) { return errorResponse(req, res, error.details[0].message) }
+   // Cek ID
+   const note = await Note.findByPk(id)
+   if (!note) { return notFoundResponse(req, res, `Note with id = ${id} not found`) }
+   try {
+      const updateNote = {title,content}
+      const result = await note.update(updateNote)
+      return successResponse(req, res, "Update note success", result)
+   } catch (error) {
+      console.error(`Error update note with id = ${id}`, error);
+      return serverErrorResponse(req, res, 'Internal Server Error')
+   }
+}
+
+
 module.exports = {
    getAll,
    create,
    getDetail,
-   destroy
+   destroy,
+   update
 }
