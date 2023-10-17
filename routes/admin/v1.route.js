@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const { auth } = require('../../app/middlewares/auth.middleware')
+
+const UserController = require('../../app/controllers/user.controller')
 const NoteController = require('../../app/controllers/note.controller')
 
 
@@ -15,5 +17,10 @@ router
    .patch(auth, NoteController.update)
    .delete(auth, NoteController.destroy)
 
+router 
+   .route('/profile')
+   .get(auth, UserController.getProfile)
+   .patch(auth, UserController.update)
+   
 module.exports = router
 
