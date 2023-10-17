@@ -4,12 +4,14 @@ const NoteValidation = require('../validations/note.validation')
 
 
 const getAll = async (req, res) => {
-   const result = await Note.findAll()
+   const user_id= req.user.id
+   const result = await Note.findAll({where:{user_id}})
    return successResponse(req, res, "Get all notes success", result)
 }
 
 const create = async (req, res) => {
    const {title, content} = req.body
+   const user_id = req.user.id
    // Validation
    const {error} = await NoteValidation.note(req.body)
    if (error) {return errorResponse(req, res, error.details[0].message)}
@@ -17,7 +19,7 @@ const create = async (req, res) => {
    const titleExist = await Note.findOne({where: {title}})
    if (titleExist) {return errorExistResponse(req, res, "Title already exists in the database.")}
    try {
-      const result = await Note.create({title,content})
+      const result = await Note.create({title,content, user_id})
       return successCreateResponse(req, res, "Create new note success", result)
    } catch (error) {
       console.error('Error create note data:', error);
@@ -29,7 +31,8 @@ const create = async (req, res) => {
 const getDetail = async (req, res) => {
    try {
       const {id} = req.params
-      const result = await Note.findByPk(id)
+      const user_id = req.user.id
+      const result = await Note.findOne({where: {id, user_id}})
       if (!result) {
          return notFoundResponse(req, res, `Note with id ${id} not found`)
       }
